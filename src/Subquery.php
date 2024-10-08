@@ -5,6 +5,7 @@ namespace Sofa\Eloquence;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Grammar;
 
 /**
  * @mixin QueryBuilder
@@ -67,7 +68,7 @@ class Subquery extends Expression
      *
      * @return string
      */
-    public function getValue()
+    public function getValue(Grammar $grammar = null)
     {
         $sql = '(' . $this->query->toSql() . ')';
 

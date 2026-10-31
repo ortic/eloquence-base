@@ -112,7 +112,7 @@ class JoinerTest extends TestCase
         $model = new JoinerUserStub;
         $grammarClass = "Illuminate\Database\Query\Grammars\SQLiteGrammar";
         $processorClass = "Illuminate\Database\Query\Processors\SQLiteProcessor";
-        $grammar = new $grammarClass;
+        $grammar = $this->newGrammar($grammarClass);
         $processor = new $processorClass;
         $schema = Mockery::mock('StdClass');
         $connection = Mockery::mock(Connection::class)->makePartial();

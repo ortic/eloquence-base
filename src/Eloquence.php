@@ -40,7 +40,9 @@ trait Eloquence
      */
     public static function bootEloquence()
     {
-        static::observe(new AttributeCleaner);
+        // observe() makes an instance of the model to list its events, which Laravel 13 refuses while the model
+        // is being booted (LogicException); the cleaner only listens to "saving"
+        static::registerModelEvent('saving', AttributeCleaner::class . '@saving');
     }
 
     /**

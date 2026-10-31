@@ -68,7 +68,7 @@ class Subquery extends Expression
      *
      * @return string
      */
-    public function getValue(Grammar $grammar = null)
+    public function getValue(?Grammar $grammar = null)
     {
         $sql = '(' . $this->query->toSql() . ')';
 
@@ -79,6 +79,16 @@ class Subquery extends Expression
         }
 
         return $sql;
+    }
+
+    /**
+     * The SQL, as Laravel's Expression used to give it before Laravel 10.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->getValue();
     }
 
     /**

@@ -53,7 +53,7 @@ class BuilderTest extends TestCase
 
     protected function getBuilder()
     {
-        $grammar = new Grammar;
+        $grammar = $this->newGrammar(Grammar::class);
         $connection = Mockery::mock('\Illuminate\Database\ConnectionInterface');
         $processor = Mockery::mock('\Illuminate\Database\Query\Processors\Processor');
         $query = new Query($connection, $grammar, $processor);

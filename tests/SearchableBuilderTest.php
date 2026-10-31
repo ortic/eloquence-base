@@ -91,7 +91,7 @@ class SearchableBuilderTest extends TestCase
         $model->getConnection()
             ->shouldReceive('select')
             ->once()
-            ->with($query, $bindings, Mockery::any())
+            ->withArgs($this->selectOf($query, $bindings))
             ->andReturn([]);
 
         $model
@@ -166,7 +166,7 @@ class SearchableBuilderTest extends TestCase
         $bindings = ['jarek', 'jarek%', '%jarek%', '%jarek%'];
 
         $model = $this->getModel();
-        $model->getConnection()->shouldReceive('select')->once()->with($query, $bindings, Mockery::any())->andReturn([]);
+        $model->getConnection()->shouldReceive('select')->once()->withArgs($this->selectOf($query, $bindings))->andReturn([]);
 
         $model->search(' jarek ', ['last_name' => 10])->getCountForPagination();
     }
@@ -303,12 +303,23 @@ class SearchableBuilderTest extends TestCase
         $this->assertEquals($bindings, $query->getBindings());
     }
 
+    /**
+     * Matches the select a query runs, whatever else Laravel passes along (since Laravel 13 a fourth argument), and
+     * with the aggregate alias quoted or not (Laravel 13 quotes it).
+     */
+    protected function selectOf($query, array $bindings)
+    {
+        return function ($sql, $actualBindings) use ($query, $bindings) {
+            return str_replace('as `aggregate`', 'as aggregate', $sql) === $query && $actualBindings === $bindings;
+        };
+    }
+
     public function getModel($driver = 'MySql')
     {
         $model = new SearchableBuilderUserStub;
         $grammarClass = "Illuminate\Database\Query\Grammars\\{$driver}Grammar";
         $processorClass = "Illuminate\Database\Query\Processors\\{$driver}Processor";
-        $grammar = new $grammarClass;
+        $grammar = $this->newGrammar($grammarClass);
         $processor = new $processorClass;
         $schema = Mockery::mock('StdClass');
         $schema->shouldReceive('getColumnListing')->andReturn(['id', 'first_name', 'last_name']);

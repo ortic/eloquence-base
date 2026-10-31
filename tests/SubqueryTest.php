@@ -27,7 +27,7 @@ class SubqueryTest extends TestCase
     /** @test */
     public function it_prints_as_aliased_query_in_parentheses()
     {
-        $grammar = new SQLiteGrammar();
+        $grammar = $this->newGrammar(SQLiteGrammar::class);
         $builder = $this->createMock(Builder::class);
         $builder->method('getGrammar')->willReturn($grammar);
         $builder->method('toSql')->willReturn('select * from "table" where id = ?');
